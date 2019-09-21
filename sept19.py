@@ -1,23 +1,34 @@
 from flask import Flask, render_template
+import random, csv
 app = Flask(__name__)
-#print("Printing this in the flask console")
-@app.route("/")
-def hello_world():
-  print(__name__)
-  return  "Call me king, cuz I be k"
 
-#@app.route("/static/template.html")
-#def template():
-#    x = [0,1,1,2,3,5,8]
-#    return "coll = " + str(x)
+allOccupation = {}
 
-@app.route("/static/templates/template/.html")
-def test_tmplt():
-    col = [0,1,1,2,3,5,8]
+def randomOccupation():
+    with open('occupations.csv') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        linenum = 0
+        for rows in reader:
+            if linenum != 0:
+                allOccupation[rows[0]] = float(rows[1])
+            linenum += 1
+        counter = 0
+        randomnum = random.uniform(0,allOccupation.get("Total"))
+        for key, value in allOccupation.items():
+            counter += value
+            if randomnum <= counter:
+                return key
+
+
+
+
+@app.route("/occupyflaskst")
+def getAJob():
+    job = randomOccupation()
     return render_template(
         'template.html',
-        foo="fooooo",
-        collection=col
+        randOccup = job,
+        bunch = allOccupation
     )
 
 
